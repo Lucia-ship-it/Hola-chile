@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hola Chile</title>
+<style>
+  :root{--bg:#fff8ef;--card:#ffffff;--text:#1f1b16;--muted:#8a7f72;--accent:#e4572e;--chip:#fff;--line:#f0e4d4;--shadow:0 2px 10px rgba(80,50,20,.08)}
+  @media (prefers-color-scheme:dark){:root{--bg:#17140f;--card:#24201a;--text:#f5eee4;--muted:#a89c8c;--accent:#ff7b54;--chip:#24201a;--line:#3a332a;--shadow:none}}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:var(--bg);color:var(--text);font:16px/1.35 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  header{position:sticky;top:0;z-index:5;background:var(--bg);padding:14px 16px 8px}
+  .top{display:flex;align-items:center;gap:10px;max-width:900px;margin:0 auto}
+  h1{font-size:1.35rem;margin:0;flex:1;white-space:nowrap}
+  .search{flex:0 1 220px;position:relative}
+  .search input{width:100%;padding:9px 12px 9px 34px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--text);font-size:.95rem}
+  .search:before{content:"🔍";position:absolute;left:11px;top:8px;font-size:.9rem}
+  .chips{display:flex;gap:8px;overflow-x:auto;padding:10px 0 4px;max-width:900px;margin:0 auto;scrollbar-width:none}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{flex:0 0 auto;border:1px solid var(--line);background:var(--chip);color:var(--text);border-radius:999px;padding:8px 14px;font-size:.95rem;cursor:pointer;white-space:nowrap}
+  .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .bar{display:flex;align-items:center;gap:8px;max-width:900px;margin:0 auto}
+  .bar .chips{flex:1;min-width:0;margin:0}
+  .bar>.chip{margin-top:6px}
+  .sep{width:1px;align-self:stretch;margin:12px 0 6px;background:var(--line)}
+  .chip.ico{padding:7px 10px;font-size:1.15rem;line-height:1}
+  #catTitle{font-size:1.1rem;margin:4px 0 12px}
+  h1{cursor:pointer}
+  main{max-width:900px;margin:0 auto;padding:6px 16px 40px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+  .t{background:var(--card);border-radius:18px;padding:14px 12px 12px;box-shadow:var(--shadow);border:1px solid var(--line);cursor:pointer;text-align:center;position:relative;display:flex;flex-direction:column;align-items:center}
+  .t .img{font-size:2rem;line-height:1;margin:2px 0 8px}
+  .t .es{font-weight:700;font-size:1.08rem}
+  .t .pr{color:var(--accent);font-size:.9rem;margin-top:2px}
+  .t .sk{color:var(--muted);font-size:.85rem;margin-top:6px}
+.t{touch-action:manipulation;user-select:none;-webkit-user-select:none}
+  .t.mk{background:#fff1b8;border-color:#f2c94c}
+  @media (prefers-color-scheme:dark){.t.mk{background:#4a3d12;border-color:#a8862a}}
+  .t .star{position:absolute;top:8px;left:10px;font-size:.9rem}
+  .t .cl{position:absolute;top:8px;right:10px;font-size:.9rem}
+.home{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+  .cat{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px 12px;box-shadow:var(--shadow);cursor:pointer;text-align:center;color:var(--text);font-size:1.05rem;font-weight:600}
+  .cat .img{font-size:2rem;display:block;margin-bottom:8px}
+  .cat small{display:block;color:var(--muted);font-weight:400;font-size:.85rem;margin-top:2px}
+  .empty{color:var(--muted);text-align:center;padding:40px 0}
+  .big{position:fixed;inset:0;z-index:10;background:var(--bg);display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px}
+  .big.show{display:flex}
+  .big .img{font-size:4.5rem;line-height:1}
+  .big .es{font-size:2.2rem;font-weight:800;margin-top:18px}
+  .big .pr{font-size:1.3rem;color:var(--accent);margin-top:6px}
+  .big .sk{font-size:1.1rem;color:var(--muted);margin-top:10px}
+  .big .btns{display:flex;gap:10px;margin-top:28px}
+  .big button{border:0;border-radius:999px;padding:12px 20px;font-size:1rem;cursor:pointer;background:var(--accent);color:#fff}
+  .big button.ghost{background:var(--card);color:var(--text);border:1px solid var(--line)}
+  .note{color:var(--muted);font-size:.8rem;text-align:center;margin-top:24px}
+</style>
+</head>
+<body>
+<header>
+  <div class="top">
+    <h1 id="title">🇨🇱 Hola Chile</h1>
+    <label class="search"><input id="q" type="search" placeholder="Hľadať všade…"></label>
+  </div>
+  <div class="bar" id="bar">
+    <button class="chip" id="home" data-c="">🏠 Všetky</button>
+    <button class="chip" data-c="Označené">⭐ Označené</button>
+    <span class="sep"></span>
+    <nav class="chips" id="chips"></nav>
+  </div>
+</header>
+<main>
+  <h2 id="catTitle"></h2>
+  <div class="grid" id="grid"></div>
+  <p class="note">Ťukni na kartičku: zväčší sa a môžeš ju ukázať človeku. Dvojitým ťuknutím si slovíčko označíš (⭐). 🇨🇱 = čilský výraz.</p>
+</main>
+
+<div class="big" id="big">
+  <div class="img" id="bImg"></div>
+  <div class="es" id="bEs"></div>
+  <div class="pr" id="bPr"></div>
+  <div class="sk" id="bSk"></div>
+  <div class="btns">
+    <button id="bSay">🔊 Vypočuť</button>
+    <button class="ghost" id="bClose">Zavrieť</button>
+  </div>
+</div>
+
+<script>
+// [obrázok, španielsky, výslovnosť, slovensky, čilské?]
+const DATA = [
+ ["👋","Pozdravy", [
+  ["👋","Hola","ola","ahoj"],
+  ["🌅","Buenos días","buenos días","dobré ráno / dobrý deň"],
+  ["🌇","Buenas tardes","buenas tardes","dobré popoludnie"],
+  ["🌙","Buenas noches","buenas nočes","dobrý večer / dobrú noc"],
+  ["🙋","Chao","čao","čau, dovidenia"],
+  ["🙏","Por favor","por fabor","prosím"],
+  ["💛","Gracias","grasias","ďakujem"],
+  ["😊","De nada","de nada","nemáš za čo"],
+  ["😬","Perdón","perdón","prepáč"],
+  ["👍","Sí","si","áno"],
+  ["👎","No","no","nie"],
+  ["🤔","¿Cómo estás?","komo estás","ako sa máš?"],
+  ["😀","Bien","bjen","dobre"],
+  ["🪪","Me llamo…","me jamo","volám sa…"],
+  ["🤝","Mucho gusto","mučo gusto","teší ma"],
+  ["🤷","No entiendo","no entjendo","nerozumiem"],
+  ["🇬🇧","¿Habla inglés?","abla inglés","hovoríte po anglicky?"],
+  ["🐢","Más despacio","mas despasjo","pomalšie"],
+  ["💡","¿Cachai?","kačaj","chápeš?",1],
+  ["✅","Sí, po","si po","no áno (po = zosilnenie)",1],
+  ["🤙","¿Qué onda?","ke onda","čo je? / ako je?",1],
+  ["🤩","¡Bacán!","bakán","super!",1],
+  ["⚡","Al tiro","al tiro","hneď, okamžite",1]
+ ]],
+ ["🧭","Základ", [
+  ["📍","¿Dónde está…?","donde está","kde je…?"],
+  ["❓","¿Qué?","ke","čo?"],
+  ["🕐","¿Cuándo?","kuando","kedy?"],
+  ["⬅️","Izquierda","iskjerda","vľavo"],
+  ["➡️","Derecha","dereča","vpravo"],
+  ["⬆️","Todo recto","todo rekto","rovno"],
+  ["👇","Aquí","akí","tu"],
+  ["👉","Allí","ají","tam"],
+  ["🟢","Abierto","abjerto","otvorené"],
+  ["🔴","Cerrado","serado","zatvorené"],
+  ["🚻","Baño","baňo","záchod"],
+  ["📅","Hoy","oj","dnes"],
+  ["⏭️","Mañana","maňana","zajtra"],
+  ["🙌","Quiero…","kjero","chcem…"],
+  ["🆘","Necesito…","nesesito","potrebujem…"],
+  ["🐘","Grande","grande","veľký"],
+  ["🐭","Pequeño","pekeňo","malý"]
+ ]],
+ ["✈️","Doprava", [
+  ["🚆","Tren","tren","vlak"],
+  ["🚗","Auto","auto","auto"],
+  ["✈️","Avión","abjón","lietadlo"],
+  ["🚌","Bus","bus","autobus"],
+  ["🚐","Micro","mikro","mestský autobus",1],
+  ["🚕","Taxi","taksi","taxík"],
+  ["🚖","Colectivo","kolektibo","zdieľaný taxík",1],
+  ["🚇","Metro","metro","metro"],
+  ["💳","Tarjeta Bip","tarcheta bip","karta na MHD v Santiagu",1],
+  ["⛴️","Barco","barko","loď"],
+  ["🚲","Bicicleta","bisikleta","bicykel"],
+  ["🛫","Aeropuerto","aeropuerto","letisko"],
+  ["🚉","Estación","estasjón","stanica"],
+  ["🚏","Parada","parada","zastávka"],
+  ["🎟️","Pasaje","pasache","lístok"],
+  ["🔁","Ida y vuelta","ida i buelta","spiatočný"],
+  ["⏰","¿A qué hora sale?","a ke ora sale","o koľkej to ide?"],
+  ["🛑","Pare aquí","pare akí","zastavte tu"],
+  ["🔑","Arrendar un auto","arendar un auto","prenajať auto",1],
+  ["⛽","Bencinera","bensinera","benzínka",1]
+ ]],
+ ["🧳","Batožina", [
+  ["🧳","Equipaje","ekipache","batožina"],
+  ["💼","Maleta","maleta","kufor"],
+  ["🎒","Mochila","močila","batoh"],
+  ["👜","Equipaje de mano","ekipache de mano","príručná batožina"],
+  ["🛂","Pasaporte","pasaporte","pas"],
+  ["🛩️","Vuelo","buelo","let"],
+  ["🚪","Puerta de embarque","puerta de embarke","gate, nástupná brána"],
+  ["🛬","Llegadas","jegadas","prílety"],
+  ["🛫","Salidas","salidas","odlety"],
+  ["😱","Perdí mi maleta","perdí mi maleta","stratil sa mi kufor"]
+ ]],
+ ["🍞","Jedlo a pitie", [
+  ["🍽️","Comida","komida","jedlo"],
+  ["🥤","Bebida","bebida","pitie, nápoj"],
+  ["😋","Comer","komer","jesť"],
+  ["🥛","Tomar","tomar","piť"],
+  ["🤤","Tengo hambre","tengo ambre","som hladný"],
+  ["🥵","Tengo sed","tengo sed","som smädný"],
+  ["💧","Agua","agua","voda"],
+  ["🍞","Pan","pan","chlieb"],
+  ["🍎","Fruta","fruta","ovocie"],
+  ["🥦","Verdura","berdura","zelenina"],
+  ["🍚","Arroz","aros","ryža"],
+  ["🥔","Papas","papas","zemiaky"],
+  ["🥚","Huevo","uebo","vajce"],
+  ["🧀","Queso","keso","syr"],
+  ["🍗","Pollo","pojo","kura"],
+  ["🥩","Carne","karne","mäso"],
+  ["🐟","Pescado","peskado","ryba"],
+  ["🥑","Palta","palta","avokádo",1],
+  ["🧃","Jugo","chugo","džús"],
+  ["☕","Café","kafé","káva"],
+  ["🍵","Té","té","čaj"],
+  ["🍺","Cerveza","serbesa","pivo"],
+  ["🍷","Vino","bino","víno"],
+  ["🥟","Empanada","empanada","pečená taštička",1],
+  ["🌭","Completo","kompleto","čilský hotdog",1],
+  ["🫖","Once","onse","podvečerný čaj s jedlom",1]
+ ]],
+ ["🍽️","Reštaurácia", [
+  ["🪑","Una mesa para dos","una mesa para dos","stôl pre dvoch"],
+  ["📖","La carta","la karta","jedálny lístok"],
+  ["👉","Quisiera…","kisjera","chcel by som…"],
+  ["🧾","La cuenta, por favor","la kuenta, por fabor","účet, prosím"],
+  ["🪙","Propina","propina","prepitné"],
+  ["🫧","Agua con gas","agua kon gas","perlivá voda"],
+  ["💧","Agua sin gas","agua sin gas","neperlivá voda"],
+  ["🥗","Soy vegetariano","soj bechetarjano","som vegetarián"],
+  ["🤧","Soy alérgico a…","soj alerchiko a","som alergický na…"],
+  ["🥂","¡Salud!","salud","na zdravie!"],
+  ["😍","¡Qué rico!","ke riko","výborné!"],
+  ["🥐","Desayuno","desajuno","raňajky"],
+  ["🍝","Almuerzo","almuerso","obed"],
+  ["🌮","Cena","sena","večera"]
+ ]],
+ ["🏨","Ubytovanie", [
+  ["📋","Tengo una reserva","tengo una reserba","mám rezerváciu"],
+  ["🛏️","¿Hay habitación?","aj abitasjón","máte voľnú izbu?"],
+  ["🌙","Una noche","una noče","jedna noc"],
+  ["🥐","¿Incluye desayuno?","inkluje desajuno","sú v cene raňajky?"],
+  ["🔑","La llave","la jabe","kľúč"],
+  ["📶","Clave del wifi","klabe del wifi","heslo na wifi"],
+  ["🚿","Agua caliente","agua kaljente","teplá voda"],
+  ["🛠️","No funciona","no funsjona","nefunguje"],
+  ["🧳","¿Puedo dejar mi equipaje?","puedo dechar mi ekipache","môžem si nechať batožinu?"],
+  ["🧾","¿Hay exención de IVA para turistas extranjeros?","aj eksensjón de iba para turistas estrančeros","je pre turistov oslobodenie od DPH? (v Čile pri platbe v USD)",1]
+ ]],
+ ["💵","Peniaze", [
+  ["💰","¿Cuánto cuesta?","kuanto kuesta","koľko to stojí?"],
+  ["🏷️","¿Cuánto vale?","kuanto bale","koľko to stojí?",1],
+  ["😮","Muy caro","muj karo","príliš drahé"],
+  ["💳","¿Aceptan tarjeta?","asebtan tarcheta","berete kartu?"],
+  ["💵","Efectivo","efektibo","hotovosť"],
+  ["🏧","Cajero","kachero","bankomat"],
+  ["🪙","¿Tiene sencillo?","tjene sensijo","máte drobné?",1],
+  ["💸","Una luca","una luka","1 000 pesos",1],
+  ["🛍️","Lo llevo","lo jebo","beriem to"],
+  ["👀","Solo estoy mirando","solo estoj mirando","len sa pozerám"],
+  ["🧾","Boleta","boleta","bloček"],
+  ["🛒","Supermercado","supermerkado","supermarket"]
+ ]],
+ ["🔢","Čísla", [
+  ["1️⃣","uno","uno","1"],["2️⃣","dos","dos","2"],["3️⃣","tres","tres","3"],["4️⃣","cuatro","kuatro","4"],
+  ["5️⃣","cinco","sinko","5"],["6️⃣","seis","sejs","6"],["7️⃣","siete","sjete","7"],["8️⃣","ocho","očo","8"],
+  ["9️⃣","nueve","nuebe","9"],["🔟","diez","djes","10"],["💯","cien","sjen","100"],["💵","mil","mil","1 000"]
+ ]],
+ ["⚠️","Pozor!", [
+  ["⚠️","¡Cuidado!","kuidado","pozor!"],
+  ["👁️","¡Ojo!","ocho","pozor! daj si pozor (veľmi časté v Čile)",1],
+  ["☠️","¡Peligro!","peligro","nebezpečenstvo!"],
+  ["🦹","¡Ladrón!","ladrón","zlodej!"],
+  ["🤏","Lanza","lansa","vreckár (Čile)",1],
+  ["😠","Flaite","flajte","pochybný, nebezpečný chlapík (Čile)",1],
+  ["🎒","¡Ojo con la mochila!","ocho kon la močila","pozor na batoh!",1],
+  ["📱","¡Te van a robar!","te ban a robar","okradnú ťa!"],
+  ["✋","¡Alto!","alto","stoj!"],
+  ["🛑","¡Para!","para","stoj! prestaň!"],
+  ["🧊","¡Quieto!","kjeto","nehýb sa!"],
+  ["🏃","¡Corre!","kore","utekaj!"],
+  ["🚫","¡Déjame!","dechame","nechaj ma!"],
+  ["👉","¡Ándate!","andate","choď preč! (Čile)",1],
+  ["🆘","¡Socorro!","sokoro","pomoc!"],
+  ["🔥","¡Fuego!","fuego","oheň! horí!"],
+  ["🌍","Temblor","temblor","zemetrasenie (menšie)",1],
+  ["🌊","Evacuación / Tsunami","ebakuasjón","evakuácia, tsunami (choďte vyššie!)"],
+  ["🚧","Zona de peligro","sona de peligro","nebezpečná zóna"]
+ ]],
+ ["🚑","Pomoc", [
+  ["🆘","¡Ayuda!","ajuda","pomoc!"],
+  ["👨‍⚕️","Necesito un médico","nesesito un médiko","potrebujem lekára"],
+  ["🚑","Ambulancia · 131","ambulansja","záchranka (tel. 131)",1],
+  ["👮","Carabineros · 133","karabineros","polícia (tel. 133)",1],
+  ["🤕","Me duele aquí","me duele akí","bolí ma tu"],
+  ["🤒","Estoy enfermo","estoj enfermo","som chorý"],
+  ["💊","Farmacia","farmasja","lekáreň"],
+  ["🏥","Hospital","ospital","nemocnica"],
+  ["🦹","Me robaron","me robaron","okradli ma"],
+  ["🗺️","Estoy perdido","estoj perdido","stratil som sa"]
+ ]]
+];
+
+const ALL = DATA.flatMap(([ic,cat,ws])=>ws.map(w=>({img:w[0],es:w[1],pr:w[2],sk:w[3],cl:!!w[4],cat})));
+const $=id=>document.getElementById(id);
+const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const norm=s=>s.toLowerCase().normalize("NFD").replace(/[̀-ͯ¿¡]/g,"");
+let cur="", shown=[];
+let marks=new Set();try{marks=new Set(JSON.parse(localStorage.getItem("marks")||"[]"));}catch(e){}
+const saveMarks=()=>{try{localStorage.setItem("marks",JSON.stringify([...marks]));}catch(e){}};
+
+const cats=[["⭐","Označené"],...DATA.map(d=>[d[0],d[1]]),["🇨🇱","Čile"]];
+$("chips").innerHTML=cats.filter(([i,c])=>c!=="Označené").map(([i,c])=>`<button class="chip ico" data-c="${c}" title="${c}" aria-label="${c}">${i}</button>`).join("");
+$("bar").onclick=e=>{const b=e.target.closest(".chip");if(!b)return;cur=b.dataset.c;$("q").value="";render();scrollTo(0,0);};
+
+function render(){
+  const q=norm($("q").value.trim());
+  shown=q?ALL.filter(w=>norm(w.es+" "+w.sk).includes(q)):cur==="Čile"?ALL.filter(w=>w.cl):cur==="Označené"?ALL.filter(w=>marks.has(w.es)):ALL.filter(w=>w.cat===cur);
+  document.querySelectorAll(".chip").forEach(c=>c.classList.toggle("on",!q&&c.dataset.c===cur));
+  $("catTitle").textContent=q?"Výsledky hľadania":cur?(cats.find(c=>c[1]===cur)||[""])[0]+" "+cur:"";
+  $("catTitle").style.display=$("catTitle").textContent?"":"none";
+  if(!q&&!cur){
+    $("grid").className="home";
+    $("grid").innerHTML=cats.map(([i,c])=>`<div class="cat" data-c="${c}"><span class="img">${i}</span>${c}<small>${c==="Označené"?marks.size:c==="Čile"?ALL.filter(w=>w.cl).length:ALL.filter(w=>w.cat===c).length} slovíčok</small></div>`).join("");
+    return;
+  }
+  $("grid").className="grid";
+  $("grid").innerHTML=shown.length?shown.map((w,i)=>`<div class="t${marks.has(w.es)?" mk":""}" data-i="${i}">${marks.has(w.es)?'<span class="star">⭐</span>':""}${w.cl?'<span class="cl">🇨🇱</span>':""}<div class="img">${w.img}</div><div class="es">${esc(w.es)}</div><div class="pr">${esc(w.pr)}</div><div class="sk">${esc(w.sk)}</div></div>`).join("")
+    :`<div class="empty">${cur==="Označené"&&!q?"Zatiaľ nič. Dvojitým ťuknutím na slovíčko si ho označíš.":"Nič sa nenašlo 🤷"}</div>`;
+}
+$("q").oninput=render;
+$("title").onclick=()=>{cur="";$("q").value="";render();scrollTo(0,0);$("chips").scrollLeft=0;};
+
+function say(t){try{const u=new SpeechSynthesisUtterance(t.replace(/·.*$/,""));u.lang="es-CL";u.rate=.85;speechSynthesis.cancel();speechSynthesis.speak(u);}catch(e){}}
+$("grid").onclick=e=>{const k=e.target.closest(".cat");if(k){cur=k.dataset.c;render();scrollTo(0,0);const ch=document.querySelector(`.chip[data-c="${cur}"]`);if(ch)ch.scrollIntoView({inline:"center",block:"nearest"});return;}
+  const t=e.target.closest(".t");if(!t)return;const w=shown[+t.dataset.i];
+  const now=Date.now();
+  if(lastTap.w===w&&now-lastTap.t<350){clearTimeout(lastTap.id);lastTap={};
+    marks.has(w.es)?marks.delete(w.es):marks.add(w.es);saveMarks();render();return;}
+  lastTap={w,t:now,id:setTimeout(()=>{lastTap={};openBig(w);},350)};
+};
+let lastTap={};
+function openBig(w){
+  $("bImg").textContent=w.img;$("bEs").textContent=w.es;$("bPr").textContent=w.pr;$("bSk").textContent=w.sk;
+  $("bSay").onclick=()=>say(w.es);$("big").classList.add("show");say(w.es);}
+$("bClose").onclick=()=>$("big").classList.remove("show");
+document.addEventListener("keydown",e=>{if(e.key==="Escape")$("big").classList.remove("show");});
+if(!("speechSynthesis" in window))$("bSay").style.display="none";
+render();
+</script>
+</body>
+</html>
