@@ -1,7 +1,7 @@
 last minute Spanish(Chile) vocabulary for travellers
 - Spanish-Slovak translations
 - pronunciation
-- main fraises
+- main phraises
 - categorised
 - save your favourites
   
